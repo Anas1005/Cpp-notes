@@ -23,8 +23,15 @@
        - C++ does not have a built-in `finally` block. Instead, RAII (Resource Acquisition Is Initialization) is used to manage resources. 
        - Objects with destructors are used to perform cleanup automatically when they go out of scope, ensuring resources are released, similar to a `finally` block.
 
-    5. **Example:**
-       This example demonstrates standard and custom exceptions, and a way to simulate a `finally` block using RAII.
+    5. **noexcept:**
+       - The `noexcept` specifier indicates whether a function is guaranteed not to throw any exceptions.
+       - It improves performance because it allows the compiler to make optimizations knowing the function will not throw.
+       - A function marked as `noexcept` that throws an exception will call `std::terminate()` and terminate the program.
+       - You can also use `noexcept(false)` to indicate that a function may throw, but this is not common as it is the default behavior.
+
+    6. **Example:**
+       This example demonstrates standard and custom exceptions, a way to simulate a `finally` block using RAII, 
+       and the use of `noexcept` for optimizing functions that are guaranteed not to throw exceptions.
 
 */
 
@@ -54,6 +61,11 @@ public:
     ResourceGuard() { cout << "Resource acquired." << endl; }
     ~ResourceGuard() { cout << "Resource released (simulating finally block)." << endl; }
 };
+
+// A function guaranteed not to throw any exceptions (noexcept)
+void safeOperation() noexcept {
+    cout << "This operation is guaranteed not to throw an exception." << endl;
+}
 
 // Function that demonstrates various exceptions
 void processData(int value) {
@@ -116,6 +128,13 @@ int main() {
         cerr << "Caught an unexpected exception." << endl;
     }
 
+    // Demonstrate the noexcept function
+    try {
+        safeOperation(); // Guaranteed not to throw
+    } catch (...) {
+        cerr << "This block will never be executed as safeOperation() is noexcept." << endl;
+    }
+
     return 0;
 }
 
@@ -140,4 +159,12 @@ int main() {
         - A general `catch (const exception& e)` block handles any other standard exceptions.
         - A catch-all `catch (...)` block is included as a safety net for any unforeseen exceptions.
 
+
+    - **noexcept Usage**:
+        - The `safeOperation` function is declared with `noexcept`, indicating it will not throw any exceptions.
+        - If a `noexcept` function throws, it results in a call to `std::terminate()`, stopping the program.
+        - Marking functions as `noexcept` where applicable helps with performance optimization and safety assurance.
+
+    This code provides a detailed demonstration of exception handling, including standard, custom exceptions, 
+    resource management using RAII, and the use of `noexcept` to enhance performance and safety.
 */
